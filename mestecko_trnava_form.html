@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ohlášení k místnímu poplatku z pobytu</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 1.8em;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 1em;
+            opacity: 0.9;
+        }
+        
+        .form-content {
+            padding: 40px;
+        }
+        
+        .section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .section-title {
+            font-size: 1.3em;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .checkbox-group {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 15px;
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .checkbox-item:hover {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+        
+        .checkbox-item input[type="checkbox"],
+        .checkbox-item input[type="radio"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+        
+        .checkbox-item label {
+            cursor: pointer;
+            font-weight: 500;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #2c3e50;
+            font-weight: 500;
+        }
+        
+        .form-group input[type="text"],
+        .form-group input[type="email"],
+        .form-group input[type="tel"],
+        .form-group input[type="date"],
+        .form-group input[type="number"],
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+        
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .info-box {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        
+        .required {
+            color: #e74c3c;
+            margin-left: 3px;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+        
+        button {
+            flex: 1;
+            min-width: 200px;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(245, 87, 108, 0.3);
+        }
+        
+        .btn-reset {
+            background: #95a5a6;
+            color: white;
+        }
+        
+        .btn-reset:hover {
+            background: #7f8c8d;
+        }
+        
+        .stamp-area {
+            border: 2px dashed #999;
+            padding: 40px;
+            text-align: center;
+            color: #999;
+            border-radius: 10px;
+            margin-top: 30px;
+        }
+        
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            
+            .container {
+                box-shadow: none;
+                border-radius: 0;
+            }
+            
+            .button-group {
+                display: none;
+            }
+            
+            .info-box {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Obec Městečko Trnávka</h1>
+            <p>569 41 Městečko Trnávka 5</p>
+            <h2 style="margin-top: 20px;">Ohlášení k místnímu poplatku z pobytu</h2>
+        </div>
+        
+        <div class="form-content">
+            <div class="info-box">
+                <strong>ℹ️ Informace:</strong> Vyplňte tento formulář v souladu s platnou obecně závaznou vyhláškou o místním poplatku z pobytu. 
+                Pole označená <span class="required">*</span> jsou povinná.
+            </div>
+            
+            <!-- Typ ohlášení -->
+            <div class="section">
+                <div class="section-title">📋 Typ ohlašovatele</div>
+                <div class="checkbox-group">
+                    <div class="checkbox-item">
+                        <input type="radio" id="typ_pravnicka" name="typ_ohlaseni" value="pravnicka">
+                        <label for="typ_pravnicka">Právnická osoba nebo fyzická osoba oprávněná k podnikání</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="radio" id="typ_fyzicka" name="typ_ohlaseni" value="fyzicka" checked>
+                        <label for="typ_fyzicka">Fyzická osoba</label>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Druh změny -->
+            <div class="section">
+                <div class="section-title">📝 Oznamuji</div>
+                <div class="checkbox-group">
+                    <div class="checkbox-item">
+                        <input type="radio" id="vznik" name="druh_zmeny" value="vznik" checked>
+                        <label for="vznik">Vznik</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="radio" id="zmena" name="druh_zmeny" value="zmena">
+                        <label for="zmena">Změnu</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="radio" id="zanik" name="druh_zmeny" value="zanik">
+                        <label for="zanik">Zánik</label>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- I. Právnická osoba -->
+            <div class="section" id="pravnicka_section" style="display: none;">
+                <div class="section-title">🏢 I. Plátce poplatku – právnická osoba nebo FO oprávněná k podnikání</div>
+                
+                <div class="form-group">
+                    <label>Název <span class="required">*</span></label>
+                    <input type="text" id="nazev_po" placeholder="Název společnosti">
+                </div>
+                
+                <div class="form-group">
+                    <label>Adresa sídla <span class="required">*</span></label>
+                    <input type="text" id="adresa_po" placeholder="Ulice, číslo, PSČ, Město">
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>E-mail <span class="required">*</span></label>
+                        <input type="email" id="email_po" placeholder="info@example.com">
+                    </div>
+                    <div class="form-group">
+                        <label>Datová schránka</label>
+                        <input type="text" id="ds_po" placeholder="xxxxxxxx">
+                    </div>
+                    <div class="form-group">
+                        <label>Telefon <span class="required">*</span></label>
+                        <input type="tel" id="tel_po" placeholder="XXX XXX XXX">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Číslo účtu související s podnikáním</label>
+                    <input type="text" id="ucet_po" placeholder="XXXXXX-XXXXXXXXXX/XXXX">
+                </div>
+                
+                <div class="form-group">
+                    <label>Osoba oprávněná jednat ve věcech poplatku</label>
+                    <textarea id="opravnena_osoba" placeholder="Jméno, příjmení, datum narození, adresa, kontakt"></textarea>
+                </div>
+            </div>
+            
+            <!-- II. Fyzická osoba -->
+            <div class="section" id="fyzicka_section">
+                <div class="section-title">👤 II. Plátce poplatku – fyzická osoba (nepodnikající)</div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Jméno <span class="required">*</span></label>
+                        <input type="text" id="jmeno" placeholder="Jméno" value="Jana">
+                    </div>
+                    <div class="form-group">
+                        <label>Příjmení <span class="required">*</span></label>
+                        <input type="text" id="prijmeni" placeholder="Příjmení" value="Janíková">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Adresa pobytu <span class="required">*</span></label>
+                    <input type="text" id="adresa_fo" placeholder="Ulice, číslo, PSČ, Město" value="Městečko Trnávka 180, 56941">
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>E-mail <span class="required">*</span></label>
+                        <input type="email" id="email_fo" placeholder="email@example.com" value="janajanikova1963@gmail.com">
+                    </div>
+                    <div class="form-group">
+                        <label>Datová schránka</label>
+                        <input type="text" id="ds_fo" placeholder="xxxxxxxx">
+                    </div>
+                    <div class="form-group">
+                        <label>Telefon <span class="required">*</span></label>
+                        <input type="tel" id="tel_fo" placeholder="XXX XXX XXX" value="736 154 370">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Rodné číslo <span class="required">*</span></label>
+                    <input type="text" id="rodnecislo" placeholder="XXXXXX/XXXX" value="64207641">
+                </div>
+            </div>
+            
+            <!-- Informace o ubytování -->
+            <div class="section">
+                <div class="section-title">🏠 Informace o místě nebo zařízení, ve kterém je ubytování poskytováno</div>
+                
+                <div class="form-group">
+                    <label>Adresa místa nebo zařízení, případně název ubytovacího zařízení <span class="required">*</span></label>
+                    <input type="text" id="adresa_ubyt" placeholder="Ulice, číslo, PSČ, Město nebo název zařízení">
+                </div>
+                
+                <div class="form-group">
+                    <label>Období, kdy je ubytování poskytováno <span class="required">*</span></label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="radio" id="obdobi_celorocne" name="obdobi" value="celorocne" checked>
+                            <label for="obdobi_celorocne">Celoročně</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="radio" id="obdobi_cast" name="obdobi" value="cast">
+                            <label for="obdobi_cast">Po část roku</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="obdobi_detail" style="display: none;">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Od</label>
+                            <input type="date" id="obdobi_od">
+                        </div>
+                        <div class="form-group">
+                            <label>Do</label>
+                            <input type="date" id="obdobi_do">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Charakter ubytování <span class="required">*</span></label>
+                    <div class="checkbox-group" style="flex-direction: column;">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="char_penzion" name="charakter" value="penzion">
+                            <label for="char_penzion">Penzion</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="char_apartman" name="charakter" value="apartman">
+                            <label for="char_apartman">Apartmán</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="char_dum" name="charakter" value="rodinny_dum">
+                            <label for="char_dum">Rodinný dům</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="char_ubytovna" name="charakter" value="ubytovna">
+                            <label for="char_ubytovna">Ubytovna</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="char_rekreacni" name="charakter" value="rekreacni">
+                            <label for="char_rekreacni">Rekreační objekt</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="char_jine" name="charakter" value="jine">
+                            <label for="char_jine">Jiné:</label>
+                            <input type="text" id="char_jine_text" placeholder="Uveďte" style="margin-left: 10px; width: 200px;">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Počet lůžek (včetně přistýlek) <span class="required">*</span></label>
+                        <input type="number" id="pocet_luzek" placeholder="0" min="1">
+                    </div>
+                    <div class="form-group">
+                        <label>Datum zahájení činnosti <span class="required">*</span></label>
+                        <input type="date" id="datum_zahajeni">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Poznámka k charakteru poskytovaného ubytování</label>
+                    <textarea id="poznamka" placeholder="Další informace..."></textarea>
+                </div>
+            </div>
+            
+            <!-- Razítko a podpis -->
+            <div class="section">
+                <div class="section-title">✍️ Datum a podpis</div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Datum <span class="required">*</span></label>
+                        <input type="date" id="datum_podpisu">
+                    </div>
+                    <div class="form-group">
+                        <label>Jméno a příjmení podepisující osoby</label>
+                        <input type="text" id="podpis_osoba" placeholder="Jméno osoby">
+                    </div>
+                </div>
+                <div class="stamp-area">
+                    Otisk podacího razítka úřadu<br>
+                    <small>(Vyplní úřad při podání)</small>
+                </div>
+            </div>
+            
+            <!-- Tlačítka -->
+            <div class="button-group">
+                <button class="btn-primary" onclick="tisknout()">🖨️ Vytisknout formulář</button>
+                <button class="btn-secondary" onclick="uložitPDF()">💾 Uložit jako PDF</button>
+                <button class="btn-reset" onclick="resetForm()">🔄 Vymazat formulář</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Nastavení dnešního data
+        document.getElementById('datum_podpisu').valueAsDate = new Date();
+        
+        // Přepínání mezi právnickou a fyzickou osobou
+        document.querySelectorAll('input[name="typ_ohlaseni"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                const pravnickaSection = document.getElementById('pravnicka_section');
+                const fyzickaSection = document.getElementById('fyzicka_section');
+                
+                if (this.value === 'pravnicka') {
+                    pravnickaSection.style.display = 'block';
+                    fyzickaSection.style.display = 'none';
+                } else {
+                    pravnickaSection.style.display = 'none';
+                    fyzickaSection.style.display = 'block';
+                }
+            });
+        });
+        
+        // Přepínání období ubytování
+        document.querySelectorAll('input[name="obdobi"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                const obdobiDetail = document.getElementById('obdobi_detail');
+                obdobiDetail.style.display = this.value === 'cast' ? 'block' : 'none';
+            });
+        });
+        
+        // Aktivace textu u "Jiné"
+        document.getElementById('char_jine').addEventListener('change', function() {
+            document.getElementById('char_jine_text').disabled = !this.checked;
+        });
+        
+        function tisknout() {
+            window.print();
+        }
+        
+        function uložitPDF() {
+            alert('💡 Tip: Použijte funkci "Tisknout" (Ctrl+P) a jako tiskárnu zvolte "Uložit jako PDF"');
+            window.print();
+        }
+        
+        function resetForm() {
+            if (confirm('Opravdu chcete vymazat všechna data z formuláře?')) {
+                document.querySelectorAll('input[type="text"], input[type="email"], input[type="tel"], input[type="number"], textarea').forEach(el => {
+                    if (!['jmeno', 'prijmeni', 'adresa_fo', 'email_fo', 'tel_fo', 'rodnecislo'].includes(el.id)) {
+                        el.value = '';
+                    }
+                });
+                document.querySelectorAll('input[type="checkbox"]').forEach(el => el.checked = false);
+                document.getElementById('datum_podpisu').valueAsDate = new Date();
+            }
+        }
+        
+        // Validace rodného čísla
+        document.getElementById('rodnecislo').addEventListener('blur', function() {
+            const rc = this.value.replace(/\//g, '');
+            if (rc.length !== 9 && rc.length !== 10) {
+                alert('⚠️ Rodné číslo by mělo mít 9 nebo 10 číslic');
+            }
+        });
+    </script>
+</body>
+</html>

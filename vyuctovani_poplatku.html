@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vyúčtování místního poplatku z pobytu</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 30px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .logo {
+            width: 80px;
+            height: 80px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2em;
+        }
+        
+        .header-text {
+            flex: 1;
+        }
+        
+        .header h1 {
+            font-size: 1.8em;
+            margin-bottom: 5px;
+        }
+        
+        .header p {
+            font-size: 1em;
+            opacity: 0.9;
+        }
+        
+        .header h2 {
+            margin-top: 15px;
+            font-size: 1.4em;
+        }
+        
+        .form-content {
+            padding: 40px;
+        }
+        
+        .section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            border-left: 4px solid #11998e;
+        }
+        
+        .section-title {
+            font-size: 1.3em;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #2c3e50;
+            font-weight: 500;
+        }
+        
+        .form-group input[type="text"],
+        .form-group input[type="email"],
+        .form-group input[type="tel"],
+        .form-group input[type="number"],
+        .form-group input[type="date"],
+        .form-group input[type="month"],
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #11998e;
+        }
+        
+        .form-group input[readonly] {
+            background: #e9ecef;
+            cursor: not-allowed;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        
+        .info-box {
+            background: #d1ecf1;
+            border-left: 4px solid #0c5460;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        
+        .warning-box {
+            background: #fff3cd;
+            border-left: 4px solid #856404;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        
+        .success-box {
+            background: #d4edda;
+            border-left: 4px solid #155724;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        
+        .required {
+            color: #e74c3c;
+            margin-left: 3px;
+        }
+        
+        .table-container {
+            overflow-x: auto;
+            margin: 20px 0;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+        
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+        
+        th {
+            background: #11998e;
+            color: white;
+            font-weight: bold;
+        }
+        
+        tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+        
+        .total-row {
+            background: #d4edda !important;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+        
+        .total-row td {
+            border-top: 3px solid #11998e;
+        }
+        
+        .checkbox-group {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 15px;
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .checkbox-item:hover {
+            border-color: #11998e;
+            background: #e8f8f5;
+        }
+        
+        .checkbox-item input[type="checkbox"],
+        .checkbox-item input[type="radio"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+        
+        .checkbox-item label {
+            cursor: pointer;
+            font-weight: 500;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+        
+        button {
+            flex: 1;
+            min-width: 180px;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(17, 153, 142, 0.3);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(245, 87, 108, 0.3);
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            color: white;
+        }
+        
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(67, 233, 123, 0.3);
+        }
+        
+        .btn-reset {
+            background: #95a5a6;
+            color: white;
+        }
+        
+        .btn-reset:hover {
+            background: #7f8c8d;
+        }
+        
+        .stamp-area {
+            border: 2px dashed #999;
+            padding: 40px;
+            text-align: center;
+            color: #999;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+        
+        .highlight {
+            background: #fff3cd;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-weight: bold;
+        }
+        
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            
+            .container {
+                box-shadow: none;
+                border-radius: 0;
+            }
+            
+            .button-group {
+                display: none;
+            }
+            
+            .info-box, .warning-box {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">🏛️</div>
+            <div class="header-text">
+                <h1>Obec Městečko Trnávka</h1>
+                <p>569 41 Městečko Trnávka 5</p>
+                <h2>Vyúčtování místního poplatku z pobytu</h2>
+            </div>
+        </div>
+        
+        <div class="form-content">
+            <div class="info-box">
+                <strong>ℹ️ Informace:</strong> V souladu s platnou obecně závaznou vyhláškou o místním poplatku z pobytu předkládáme následující vyúčtování odvodu poplatku z pobytu.
+                <br><br>
+                <strong>Sazba poplatku: <span class="highlight">20 Kč/osoba/den</span></strong>
+            </div>
+            
+            <!-- I. Identifikace plátce -->
+            <div class="section">
+                <div class="section-title">👤 I. Identifikace plátce poplatku</div>
+                
+                <div class="form-group">
+                    <label>Název subjektu (fyzická nebo právnická osoba) <span class="required">*</span></label>
+                    <input type="text" id="nazev" placeholder="Jméno a příjmení nebo název společnosti" value="Jana Janíková (64207641)">
+                </div>
+                
+                <div class="form-group">
+                    <label>Adresa sídla <span class="required">*</span></label>
+                    <input type="text" id="adresa" placeholder="Ulice, číslo, PSČ, Město" value="Městečko Trnávka 180, 56941">
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>E-mail <span class="required">*</span></label>
+                        <input type="email" id="email" placeholder="email@example.com" value="janajanikova1963@gmail.com">
+                    </div>
+                    <div class="form-group">
+                        <label>Datová schránka</label>
+                        <input type="text" id="ds" placeholder="xxxxxxxx">
+                    </div>
+                    <div class="form-group">
+                        <label>Telefon <span class="required">*</span></label>
+                        <input type="tel" id="tel" placeholder="XXX XXX XXX" value="736 154 370">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Název ubytovacího zařízení <span class="required">*</span></label>
+                    <input type="text" id="nazev_zarizeni" placeholder="Název ubytovacího zařízení" value="Ubytování pod Cimburkem">
+                </div>
+                
+                <div class="form-group">
+                    <label>Adresa ubytovacího zařízení <span class="required">*</span></label>
+                    <input type="text" id="adresa_zarizeni" placeholder="Ulice, číslo, PSČ, Město" value="Městečko Trnávka 180, 56941">
+                </div>
+            </div>
+            
+            <!-- II. Vyúčtování -->
+            <div class="section">
+                <div class="section-title">💰 II. Vyúčtování poplatku z pobytu</div>
+                
+                <div class="warning-box">
+                    <strong>⚠️ Důležité:</strong> Poplatek se platí za každého hosta a za každou přenocovanou noc. Sazba je 20 Kč/osoba/den.
+                </div>
+                
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Položka</th>
+                                <th style="width: 200px;">Vyplní poskytovatel ubytování</th>
+                                <th style="width: 200px;">Správce poplatku<br>(kontrolní činnost)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Aktuální ubytovací kapacita činní (počet lůžek)</strong></td>
+                                <td>
+                                    <input type="number" id="kapacita" min="1" value="9" 
+                                           style="width: 100%; padding: 8px; border: 2px solid #ddd; border-radius: 5px;">
+                                </td>
+                                <td style="background: #f0f0f0;"></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Kalendářní měsíc, za který je vyúčtování podáváno</strong></td>
+                                <td>
+                                    <input type="month" id="mesic" 
+                                           style="width: 100%; padding: 8px; border: 2px solid #ddd; border-radius: 5px;">
+                                </td>
+                                <td style="background: #f0f0f0;"></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Počet obsazených lůžek (celkem za měsíc)</strong></td>
+                                <td>
+                                    <input type="number" id="obsazene_luzka" min="0" value="0" 
+                                           onchange="vypocitejPoplatek()"
+                                           style="width: 100%; padding: 8px; border: 2px solid #ddd; border-radius: 5px;">
+                                    <small style="color: #666;">= počet hostů × počet nocí</small>
+                                </td>
+                                <td style="background: #f0f0f0;"></td>
+                            </tr>
+                            <tr class="total-row">
+                                <td><strong>VÝPOČET POPLATKU</strong></td>
+                                <td>
+                                    <input type="text" id="vysledek" readonly 
+                                           style="width: 100%; padding: 8px; background: #d4edda; 
+                                                  border: 2px solid #155724; border-radius: 5px; 
+                                                  font-weight: bold; font-size: 1.2em; text-align: right;">
+                                </td>
+                                <td style="background: #f0f0f0;"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="success-box" id="vypocet_detail" style="display: none;">
+                    <strong>🧮 Výpočet:</strong>
+                    <div id="vypocet_text" style="margin-top: 10px; font-size: 1.1em;"></div>
+                </div>
+            </div>
+            
+            <!-- Prohlášení -->
+            <div class="section">
+                <div class="section-title">✅ Prohlášení a úhrada</div>
+                
+                <p style="margin-bottom: 20px; font-weight: 500;">
+                    Prohlašuji, že uvedené údaje jsou dle evidence ubytovacího zařízení přesně vykázány.
+                </p>
+                
+                <div class="form-group">
+                    <label><strong>Poplatek byl v přiznané výši uhrazen:</strong></label>
+                    <div class="checkbox-group" style="flex-direction: column; gap: 10px;">
+                        <div class="checkbox-item">
+                            <input type="radio" id="uhrada_hotovost" name="zpusob_uhrady" value="hotovost">
+                            <label for="uhrada_hotovost">v hotovosti na pokladně Obecního úřadu Městečko Trnávka</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="radio" id="uhrada_ucet" name="zpusob_uhrady" value="ucet">
+                            <label for="uhrada_ucet">na bankovní účet ČS č. 1283437329/0800</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-row" style="margin-top: 20px;">
+                    <div class="form-group">
+                        <label>Datum úhrady <span class="required">*</span></label>
+                        <input type="date" id="datum_uhrady">
+                    </div>
+                    <div class="form-group">
+                        <label>Variabilní symbol (VS) <span style="color: #666;">(pro platbu na účet)</span></label>
+                        <input type="text" id="vs" placeholder="např. 202401">
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Podpis -->
+            <div class="section">
+                <div class="section-title">✍️ Místo, datum a podpis</div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Místo</label>
+                        <input type="text" id="misto" value="Městečko Trnávka">
+                    </div>
+                    <div class="form-group">
+                        <label>Datum <span class="required">*</span></label>
+                        <input type="date" id="datum">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Podpis (razítko organizace)</label>
+                    <div style="height: 80px; border: 2px dashed #ddd; border-radius: 8px; 
+                                display: flex; align-items: center; justify-content: center; color: #999;">
+                        Prostor pro podpis / razítko
+                    </div>
+                </div>
+                
+                <div class="stamp-area">
+                    Otisk podacího razítka úřadu<br>
+                    <small>(Vyplní úřad při podání)</small>
+                </div>
+            </div>
+            
+            <!-- Tlačítka -->
+            <div class="button-group">
+                <button class="btn-success" onclick="zobrazitSouhrn()">📊 Zobrazit souhrn</button>
+                <button class="btn-primary" onclick="tisknout()">🖨️ Vytisknout</button>
+                <button class="btn-secondary" onclick="ulozitPDF()">💾 Uložit jako PDF</button>
+                <button class="btn-reset" onclick="resetForm()">🔄 Vymazat</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Nastavení dnešního data
+        const dnes = new Date();
+        document.getElementById('datum').valueAsDate = dnes;
+        
+        // Nastavení aktuálního měsíce
+        const rok = dnes.getFullYear();
+        const mesic = String(dnes.getMonth() + 1).padStart(2, '0');
+        document.getElementById('mesic').value = `${rok}-${mesic}`;
+        
+        // Funkce pro výpočet poplatku
+        function vypocitejPoplatek() {
+            const obsazene = parseInt(document.getElementById('obsazene_luzka').value) || 0;
+            const sazba = 20; // Kč za osobu a den
+            const celkem = obsazene * sazba;
+            
+            document.getElementById('vysledek').value = celkem.toLocaleString('cs-CZ') + ' Kč';
+            
+            // Zobrazit detail výpočtu
+            if (obsazene > 0) {
+                const detail = document.getElementById('vypocet_detail');
+                detail.style.display = 'block';
+                document.getElementById('vypocet_text').innerHTML = `
+                    ${obsazene.toLocaleString('cs-CZ')} osob × ${sazba} Kč = <strong style="color: #155724; font-size: 1.2em;">${celkem.toLocaleString('cs-CZ')} Kč</strong>
+                    <br><br>
+                    <small>Tento poplatek zahrnuje všechny hosty za celý vyúčtovací měsíc.</small>
+                `;
+            } else {
+                document.getElementById('vypocet_detail').style.display = 'none';
+            }
+        }
+        
+        // Inicializace výpočtu
+        vypocitejPoplatek();
+        
+        function zobrazitSouhrn() {
+            const nazev = document.getElementById('nazev').value;
+            const zarizeni = document.getElementById('nazev_zarizeni').value;
+            const mesic = document.getElementById('mesic').value;
+            const obsazene = document.getElementById('obsazene_luzka').value;
+            const vysledek = document.getElementById('vysledek').value;
+            
+            if (!mesic || !obsazene || obsazene == 0) {
+                alert('⚠️ Prosím vyplňte měsíc a počet obsazených lůžek!');
+                return;
+            }
+            
+            // Formátování data
+            const [r, m] = mesic.split('-');
+            const mesice = ['leden', 'únor', 'březen', 'duben', 'květen', 'červen', 
+                           'červenec', 'srpen', 'září', 'říjen', 'listopad', 'prosinec'];
+            const mesicNazev = mesice[parseInt(m) - 1];
+            
+            const souhrn = `
+╔════════════════════════════════════════════════════════╗
+║        SOUHRN VYÚČTOVÁNÍ POPLATKU Z POBYTU           ║
+╚════════════════════════════════════════════════════════╝
+
+Plátce: ${nazev}
+Zařízení: ${zarizeni}
+
+Období: ${mesicNazev} ${r}
+Počet obsazených lůžek: ${obsazene}
+
+────────────────────────────────────────────────────────
+CELKEM K ÚHRADĚ: ${vysledek}
+────────────────────────────────────────────────────────
+
+Sazba: 20 Kč/osoba/den
+            `;
+            
+            alert(souhrn);
+        }
+        
+        function tisknout() {
+            const obsazene = document.getElementById('obsazene_luzka').value;
+            if (!obsazene || obsazene == 0) {
+                if (!confirm('Počet obsazených lůžek je 0. Opravdu chcete vytisknout?')) {
+                    return;
+                }
+            }
+            window.print();
+        }
+        
+        function ulozitPDF() {
+            alert('💡 Tip: Použijte funkci "Tisknout" (Ctrl+P) a jako tiskárnu zvolte "Uložit jako PDF"');
+            window.print();
+        }
+        
+        function resetForm() {
+            if (confirm('Opravdu chcete vymazat všechna vyplněná data?')) {
+                // Resetovat jen vyplněná pole, zachovat předvyplněné hodnoty
+                document.getElementById('obsazene_luzka').value = 0;
+                document.getElementById('datum_uhrady').value = '';
+                document.getElementById('vs').value = '';
+                document.querySelectorAll('input[name="zpusob_uhrady"]').forEach(el => el.checked = false);
+                
+                vypocitejPoplatek();
+                
+                alert('✅ Formulář byl resetován. Základní údaje zůstaly zachovány.');
+            }
+        }
+        
+        // Automaticky nastavit VS podle měsíce
+        document.getElementById('mesic').addEventListener('change', function() {
+            const value = this.value; // Format: YYYY-MM
+            if (value) {
+                const vs = value.replace('-', '');
+                document.getElementById('vs').value = vs;
+            }
+        });
+        
+        // Nastavit VS pro aktuální měsíc
+        document.getElementById('vs').value = `${rok}${mesic}`;
+    </script>
+</body>
+</html>

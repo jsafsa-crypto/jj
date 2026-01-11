@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formuláře - Městečko Trnávka</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 50px;
+            max-width: 800px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+            text-align: center;
+        }
+        
+        h2 {
+            color: #7f8c8d;
+            margin-bottom: 40px;
+            text-align: center;
+            font-weight: normal;
+        }
+        
+        .cards {
+            display: grid;
+            gap: 20px;
+            margin-top: 40px;
+        }
+        
+        .card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 30px;
+            border-radius: 15px;
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s;
+            display: block;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(102, 126, 234, 0.4);
+        }
+        
+        .card h3 {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+        
+        .card p {
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+        
+        .card.green {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        }
+        
+        .icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+        }
+        
+        .footer {
+            margin-top: 40px;
+            text-align: center;
+            color: #7f8c8d;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📋 Formuláře</h1>
+        <h2>Obec Městečko Trnávka<br>Místní poplatek z pobytu</h2>
+        
+        <div class="cards">
+            <a href="ohlaseni-poplatku.html" class="card">
+                <div class="icon">📝</div>
+                <h3>Ohlášení k místnímu poplatku z pobytu</h3>
+                <p>Interaktivní formulář pro ohlášení vzniku, změny nebo zániku povinnosti platit místní poplatek z pobytu.</p>
+            </a>
+            
+            <a href="vyuctovani-poplatku.html" class="card green">
+                <div class="icon">💰</div>
+                <h3>Vyúčtování místního poplatku z pobytu</h3>
+                <p>Formulář pro měsíční vyúčtování poplatku s automatickým výpočtem. Sazba: 20 Kč/osoba/den.</p>
+            </a>
+        </div>
+        
+        <div class="footer">
+            <p>Vytvořeno pro Obec Městečko Trnávka | 569 41 Městečko Trnávka 5</p>
+        </div>
+    </div>
+</body>
+</html>
